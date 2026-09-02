@@ -1,0 +1,337 @@
+<div class="host-wrap">
+  <svg class="court-lines" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <circle cx="600" cy="400" r="140" fill="none" stroke="#F2650C" stroke-width="1"/>
+    <path d="M 100 800 A 500 500 0 0 1 100 100" fill="none" stroke="#F2650C" stroke-width="1"/>
+    <path d="M 1100 800 A 500 500 0 0 0 1100 100" fill="none" stroke="#F2650C" stroke-width="1"/>
+    <line x1="0" y1="400" x2="1200" y2="400" stroke="#F2650C" stroke-width="1"/>
+  </svg>
+
+  <!-- ============ LOGIN ============ -->
+  <section class="screen screen-login" *ngIf="screen === 'login'">
+    <form class="login-card" (ngSubmit)="onLogin()" novalidate>
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0A1120" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/>
+          </svg>
+        </div>
+        <div class="wordmark display">BASK<span>STATS</span></div>
+        <div class="tagline">Basquete em números</div>
+      </div>
+
+      <div class="field" [class.invalid]="emailInvalid">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email"
+               placeholder="voce@exemplo.com" autocomplete="username">
+        <div class="field-error">Informe um e-mail válido.</div>
+      </div>
+
+      <div class="field" [class.invalid]="passwordInvalid">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password"
+               placeholder="••••••••" autocomplete="current-password">
+        <div class="field-error">A senha precisa ter pelo menos 6 caracteres.</div>
+      </div>
+
+      <div class="row-between">
+        <label class="checkbox-wrap">
+          <input type="checkbox" name="remember" [(ngModel)]="remember">
+          Lembrar de mim
+        </label>
+        <a href="javascript:void(0)" class="link">Esqueci minha senha</a>
+      </div>
+
+      <button type="submit" class="btn-primary">ENTRAR</button>
+
+      <div class="divider">ou</div>
+
+      <div class="signup-row">
+        Ainda não tem conta? <a href="javascript:void(0)" class="link">Criar conta</a>
+      </div>
+
+      <div class="hint-row">Modo de teste: qualquer e-mail/senha válidos entram.</div>
+    </form>
+  </section>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section class="screen screen-dash" *ngIf="screen === 'dash' && dashData as data">
+    <div class="topbar">
+      <div class="brand-mini">
+        <div class="brand-logo-mini">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0A1120" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/>
+          </svg>
+        </div>
+        <div class="wordmark display">BASK<span style="color:#F2650C">STATS</span></div>
+      </div>
+      <div class="user-chip">
+        <button class="btn-ghost" (click)="abrirAtletas()">Atletas</button>
+        <div class="avatar">{{ avatarInitial }}</div>
+        <button class="btn-ghost" (click)="onLogout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="eyebrow">Painel</div>
+      <h1>Bem-vinda de volta, <span>{{ userGreeting }}</span>.</h1>
+      <p class="dash-sub">Visão geral da temporada do NBB Feminino — dados de demonstração gerados automaticamente.</p>
+
+      <div class="chart-grid">
+        <!-- Pontos por rodada -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Pontos por rodada</h3>
+            <span class="tag">Últimas 10 rodadas</span>
+          </div>
+          <div class="chart-box">
+            <svg viewBox="0 0 600 240" style="width:100%;height:100%">
+              <line *ngFor="let gy of pointsGrid" x1="32" [attr.y1]="gy" x2="588" [attr.y2]="gy"
+                    stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+              <path [attr.d]="pointsArea" fill="rgba(242,101,12,.16)" stroke="none"/>
+              <path [attr.d]="pointsLine" fill="none" stroke="#F2650C" stroke-width="2.5"/>
+              <ng-container *ngFor="let p of pointsDots">
+                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4" fill="#FF9B4D" stroke="#101B2E" stroke-width="1.5">
+                  <title>{{ p.label }}: {{ p.val }} pts</title>
+                </circle>
+              </ng-container>
+              <text *ngFor="let l of pointsLabels" [attr.x]="l.x" y="232"
+                    font-size="10" fill="#8C96AC" text-anchor="middle">{{ l.label }}</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Vitórias x Derrotas -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Vitórias x Derrotas</h3>
+            <span class="tag">Temporada</span>
+          </div>
+          <div class="chart-box" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+            <svg viewBox="0 0 160 160" style="width:150px;height:150px">
+              <circle cx="80" cy="80" r="69" fill="none" stroke="#2A3650" stroke-width="22"/>
+              <circle cx="80" cy="80" r="69" fill="none" stroke="#F2650C" stroke-width="22"
+                      [attr.stroke-dasharray]="wlDashArray" stroke-linecap="round" transform="rotate(-90 80 80)"/>
+              <text x="80" y="77" text-anchor="middle" font-size="26" font-family="'Bebas Neue',sans-serif" fill="#FBF7F0">{{ wlPct }}%</text>
+              <text x="80" y="96" text-anchor="middle" font-size="10" fill="#8C96AC">vitórias</text>
+            </svg>
+            <div class="wl-legend">
+              <span><span class="wl-dot" style="background:#F2650C"></span>Vitórias ({{ data.vitorias }})</span>
+              <span><span class="wl-dot" style="background:#2A3650"></span>Derrotas ({{ data.derrotas }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <!-- Aproveitamento de arremessos -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Aproveitamento de arremessos</h3>
+            <span class="tag">Média do time</span>
+          </div>
+          <div class="chart-box small">
+            <svg viewBox="0 0 400 200" style="width:100%;height:100%">
+              <line x1="0" y1="174" x2="400" y2="174" stroke="rgba(255,255,255,.1)"/>
+              <ng-container *ngFor="let b of shootingBars">
+                <rect [attr.x]="b.x" [attr.y]="b.y" [attr.width]="b.w" [attr.height]="b.h" rx="6" [attr.fill]="b.color"/>
+                <text [attr.x]="b.cx" [attr.y]="b.vy" text-anchor="middle" font-size="13" font-weight="700" fill="#FBF7F0">{{ b.val }}%</text>
+                <text [attr.x]="b.cx" y="192" text-anchor="middle" font-size="11" fill="#8C96AC">{{ b.label }}</text>
+              </ng-container>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Maiores pontuadoras -->
+        <div class="card table-card">
+          <div class="card-head">
+            <h3>Maiores pontuadoras</h3>
+            <span class="tag">Top 5</span>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Atleta</th><th>Pos.</th><th>PPJ</th><th>REB</th><th>AST</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let j of data.jogadoras">
+                <td>{{ j.nome }}</td>
+                <td><span class="pos-badge">{{ j.pos }}</span></td>
+                <td>{{ j.ppj }}</td>
+                <td>{{ j.reb }}</td>
+                <td>{{ j.ast }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <!-- Pontos médios por posição -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Pontos médios por posição</h3>
+            <span class="tag">Média do elenco</span>
+          </div>
+          <div class="chart-box small">
+            <svg viewBox="0 0 400 200" style="width:100%;height:100%">
+              <ng-container *ngFor="let r of positionBars">
+                <text [attr.x]="r.labelX" [attr.y]="r.textY" text-anchor="end" font-size="11.5" fill="#8C96AC">{{ r.pos }}</text>
+                <rect [attr.x]="r.barX" [attr.y]="r.y" [attr.width]="r.w" [attr.height]="r.h" rx="5" fill="#F2650C"/>
+                <text [attr.x]="r.valueX" [attr.y]="r.textY" font-size="11.5" font-weight="700" fill="#FBF7F0">{{ r.media }}</text>
+              </ng-container>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Sequência de resultados -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Sequência de resultados</h3>
+            <span class="tag">Últimos 10 jogos</span>
+          </div>
+          <div class="chart-box small" style="display:flex;flex-direction:column;justify-content:center">
+            <div class="streak-row">
+              <div class="streak-item" *ngFor="let s of streakItems; let i = index">
+                <div class="streak-square" [style.background]="s.color">{{ s.result }}</div>
+                <span class="streak-label">J{{ i + 1 }}</span>
+              </div>
+            </div>
+            <div class="streak-summary">{{ streakWins }} vitórias nos últimos {{ streakItems.length }} jogos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LISTA DE ATLETAS ============ -->
+  <section class="screen screen-dash" *ngIf="screen === 'atletas'">
+    <div class="topbar">
+      <div class="brand-mini">
+        <div class="brand-logo-mini">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0A1120" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/>
+          </svg>
+        </div>
+        <div class="wordmark display">BASK<span style="color:#F2650C">STATS</span></div>
+      </div>
+      <div class="user-chip">
+        <button class="btn-ghost" (click)="voltarParaDashboard()">← Dashboard</button>
+        <button class="btn-ghost" (click)="onLogout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="eyebrow">Elenco</div>
+      <h1>Estatísticas <span>individuais</span>.</h1>
+      <p class="dash-sub">Selecione uma atleta para ver o detalhamento completo das estatísticas.</p>
+
+      <div class="atleta-grid">
+        <button class="atleta-card" *ngFor="let a of atletas" (click)="selecionarAtleta(a)">
+          <div class="atleta-avatar">{{ a.numero }}</div>
+          <div class="atleta-info">
+            <div class="atleta-nome">{{ a.nome }}</div>
+            <span class="pos-badge">{{ a.pos }}</span>
+          </div>
+          <div class="atleta-ppj">
+            <div class="atleta-ppj-value display">{{ a.ppj }}</div>
+            <div class="atleta-ppj-label">PPJ</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DETALHE DA ATLETA ============ -->
+  <section class="screen screen-dash" *ngIf="screen === 'atleta-detalhe' && atletaSelecionada as atleta">
+    <div class="topbar">
+      <div class="brand-mini">
+        <div class="brand-logo-mini">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0A1120" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/>
+          </svg>
+        </div>
+        <div class="wordmark display">BASK<span style="color:#F2650C">STATS</span></div>
+      </div>
+      <div class="user-chip">
+        <button class="btn-ghost" (click)="voltarParaAtletas()">← Atletas</button>
+        <button class="btn-ghost" (click)="onLogout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="dash-content">
+      <div class="atleta-header">
+        <div class="atleta-avatar big">{{ atleta.numero }}</div>
+        <div>
+          <div class="eyebrow">{{ atleta.pos }} · #{{ atleta.numero }}</div>
+          <h1>{{ atleta.nome }}</h1>
+          <p class="dash-sub">{{ atleta.jogos }} jogos disputados · {{ atleta.minutos }} min por jogo · eficiência {{ atleta.eficiencia }}</p>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">Pontos por jogo</div>
+          <div class="value display">{{ atleta.ppj }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Rebotes por jogo</div>
+          <div class="value display">{{ atleta.reb }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Assistências por jogo</div>
+          <div class="value display">{{ atleta.ast }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Roubos de bola</div>
+          <div class="value display">{{ atleta.roubos }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Tocos</div>
+          <div class="value display">{{ atleta.tocos }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Perdas de bola</div>
+          <div class="value display">{{ atleta.turnovers }}</div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="card">
+          <div class="card-head">
+            <h3>Principais estatísticas</h3>
+            <span class="tag">Média por jogo</span>
+          </div>
+          <div class="chart-box small">
+            <svg viewBox="0 0 400 210" style="width:100%;height:100%">
+              <ng-container *ngFor="let r of atletaStatBars">
+                <text [attr.x]="r.labelX" [attr.y]="r.textY" text-anchor="end" font-size="11.5" fill="#8C96AC">{{ r.label }}</text>
+                <rect [attr.x]="r.barX" [attr.y]="r.y" [attr.width]="r.w" [attr.height]="r.h" rx="5" fill="#F2650C"/>
+                <text [attr.x]="r.valueX" [attr.y]="r.textY" font-size="11.5" font-weight="700" fill="#FBF7F0">{{ r.value }}</text>
+              </ng-container>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>Aproveitamento de arremessos</h3>
+            <span class="tag">Individual</span>
+          </div>
+          <div class="chart-box small">
+            <svg viewBox="0 0 400 200" style="width:100%;height:100%">
+              <line x1="0" y1="174" x2="400" y2="174" stroke="rgba(255,255,255,.1)"/>
+              <ng-container *ngFor="let b of atletaShootBars">
+                <rect [attr.x]="b.x" [attr.y]="b.y" [attr.width]="b.w" [attr.height]="b.h" rx="6" [attr.fill]="b.color"/>
+                <text [attr.x]="b.cx" [attr.y]="b.vy" text-anchor="middle" font-size="13" font-weight="700" fill="#FBF7F0">{{ b.val }}%</text>
+                <text [attr.x]="b.cx" y="192" text-anchor="middle" font-size="11" fill="#8C96AC">{{ b.label }}</text>
+              </ng-container>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

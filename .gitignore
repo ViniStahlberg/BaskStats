@@ -1,0 +1,49 @@
+==========================================
+Compilação e Build do Angular
+==========================================
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+Caches do Angular e Ferramentas de Build
+/.angular
+/.sass-cache
+/connect.lock
+/coverage
+/lib-cov
+
+==========================================
+Dependências de Node
+==========================================
+/node_modules
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+pnpm-debug.log
+
+==========================================
+IDEs, Editores e Arquivos do Sistema
+==========================================
+/.idea
+/.vscode/*
+!/.vscode/settings.json
+!/.vscode/tasks.json
+!/.vscode/launch.json
+!/.vscode/extensions.json
+/.suo
+/.ntvs*
+/.njsproj
+/.sln
+/*.sw?
+.DS_Store
+Thumbs.db
+
+==========================================
+Variáveis de Ambiente e Segredos Locais
+==========================================
+Descomente caso use arquivos de ambiente locais privados
+/src/environments/environment.development.ts
+/src/environments/environment.local.ts
+.env
+.env.local
