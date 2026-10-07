@@ -5,7 +5,7 @@ import com.time.api.repository.JogadoraRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@Service
+@Service    
 public class JogadoraService {
 
     private final JogadoraRepository jogadoraRepository;
