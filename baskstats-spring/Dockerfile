@@ -1,11 +1,12 @@
-# Etapa 1: Build da aplicação com Gradle e Java 17
+# Etapa 1: Build da aplicação usando a imagem do Gradle
 FROM gradle:8.5-jdk17 AS build
-COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle build --no-daemon -x test
+COPY --chown=gradle:gradle . .
+RUN gradle bootJar --no-daemon -x test
 
 # Etapa 2: Imagem final leve para execução
 FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
 EXPOSE 8080
-COPY --from=build /home/gradle/src/build/libs/*-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
