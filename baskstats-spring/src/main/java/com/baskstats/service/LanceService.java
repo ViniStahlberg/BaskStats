@@ -1,7 +1,7 @@
-package com.time.api.service;
+package com.baskstats.service;
 
-import com.time.api.model.Lance;
-import com.time.api.repository.LanceRepository;
+import com.baskstats.model.*;
+import com.baskstats.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

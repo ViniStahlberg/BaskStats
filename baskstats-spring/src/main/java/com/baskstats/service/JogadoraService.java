@@ -1,7 +1,7 @@
-package com.time.api.service;
+package com.baskstats.service;
 
-import com.time.api.model.Jogadora;
-import com.time.api.repository.JogadoraRepository;
+import com.baskstats.model.*;
+import com.baskstats.repository.*;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

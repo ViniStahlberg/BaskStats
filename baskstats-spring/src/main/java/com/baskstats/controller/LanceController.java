@@ -1,7 +1,7 @@
-package com.time.api.controller;
+package com.baskstats.controller;
 
-import com.time.api.model.Lance;
-import com.time.api.service.LanceService;
+import com.baskstats.model.*;
+import com.baskstats.service.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

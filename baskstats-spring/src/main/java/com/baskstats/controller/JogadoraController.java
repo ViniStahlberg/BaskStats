@@ -1,7 +1,7 @@
-package com.time.api.controller;
+package com.baskstats.controller;
 
-import com.time.api.model.Jogadora;
-import com.time.api.service.JogadoraService;
+import com.baskstats.model.*;
+import com.baskstats.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

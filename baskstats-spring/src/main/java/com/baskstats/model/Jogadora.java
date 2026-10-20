@@ -1,4 +1,4 @@
-package com.time.api.model;
+package com.baskstats.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;

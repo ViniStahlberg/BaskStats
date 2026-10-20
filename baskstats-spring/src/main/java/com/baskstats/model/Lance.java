@@ -1,8 +1,9 @@
-package com.time.api.model;
+package com.baskstats.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import com.baskstats.model.*;
 
 @Entity
 @Table(name = "lance")
