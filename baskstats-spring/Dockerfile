@@ -1,5 +1,5 @@
-# Etapa 1: Build da aplicação usando a imagem do Gradle
-FROM gradle:8.5-jdk17 AS build
+# Etapa 1: Build da aplicação usando a imagem do Gradle atualizada (8.14)
+FROM gradle:8.14-jdk17 AS build
 WORKDIR /home/gradle/src
 COPY --chown=gradle:gradle . .
 RUN gradle bootJar --no-daemon -x test
