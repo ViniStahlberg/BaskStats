@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "jogadora", indexes = @Index(name = "ix_jogadora_nome", columnList = "nome"))
+@Table(name = "Jogadora", indexes = @Index(name = "ix_jogadora_nome", columnList = "nome"))
 public class Jogadora {
 
     @Id
@@ -28,12 +28,17 @@ public class Jogadora {
     @Column(name = "data_ultima_medicao")
     private LocalDate dataUltimaMedicao;
 
-    // Construtores
+    // -----------------------------------------------------------------
+    // NOTA: a coluna "posicao" não existe no schema atual (nem aqui,
+    // nem em Elenco). A rota GET /api/jogadoras?posicao=X depende dela.
+    // Ver ROTAS_FASE2.md para sugestão de ALTER TABLE.
+    // -----------------------------------------------------------------
+
     public Jogadora() {
     }
 
-    public Jogadora(String nome, BigDecimal peso, BigDecimal altura, 
-                    BigDecimal envergadura, LocalDate dataUltimaMedicao) {
+    public Jogadora(String nome, BigDecimal peso, BigDecimal altura,
+                     BigDecimal envergadura, LocalDate dataUltimaMedicao) {
         this.nome = nome;
         this.peso = peso;
         this.altura = altura;
@@ -41,7 +46,6 @@ public class Jogadora {
         this.dataUltimaMedicao = dataUltimaMedicao;
     }
 
-    // Getters e Setters
     public Integer getIdJogadora() {
         return idJogadora;
     }
@@ -88,17 +92,5 @@ public class Jogadora {
 
     public void setDataUltimaMedicao(LocalDate dataUltimaMedicao) {
         this.dataUltimaMedicao = dataUltimaMedicao;
-    }
-
-    @Override
-    public String toString() {
-        return "Jogadora{" +
-                "idJogadora=" + idJogadora +
-                ", nome='" + nome + '\'' +
-                ", peso=" + peso +
-                ", altura=" + altura +
-                ", envergadura=" + envergadura +
-                ", dataUltimaMedicao=" + dataUltimaMedicao +
-                '}';
     }
 }
