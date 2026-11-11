@@ -1,9 +1,8 @@
-package com.time.api.repository;
+package com.baskstats.repository;
 
-import com.time.api.model.Partida;
+import com.baskstats.model.Partida;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PartidaRepository extends JpaRepository<Partida, Integer> {
-}
+public interface PartidaRepository extends JpaRepository<Partida, Integer> {}

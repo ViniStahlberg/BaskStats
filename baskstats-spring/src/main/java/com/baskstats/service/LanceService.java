@@ -10,16 +10,17 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class LanceService {
 
-    private final LanceRepository repository;
+  private final LanceRepository repository;
 
-    public LanceService(LanceRepository repository) {
-        this.repository = repository;
-    }
+  public LanceService(LanceRepository repository) {
+    this.repository = repository;
+  }
 
-    @Transactional(readOnly = true)
-    public Lance buscarPorId(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Lance não encontrado: " + id));
-    }
+  @Transactional(readOnly = true)
+  public Lance buscarPorId(Integer id) {
+    return repository
+        .findById(id)
+        .orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lance não encontrado: " + id));
+  }
 }
