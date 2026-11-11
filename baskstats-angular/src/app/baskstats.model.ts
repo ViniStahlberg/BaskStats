@@ -1,53 +1,67 @@
-export interface Jogadora {
-  nome: string;
-  pos: string;
-  ppj: number;
-  reb: number;
-  ast: number;
-}
-
-export interface AtletaDetalhada {
+export interface Player {
   id: number;
   nome: string;
   pos: string;
-  numero: number;
-  jogos: number;
-  minutos: number;
+  numero: number | null;
   ppj: number;
   reb: number;
   ast: number;
+  jogos: number;
+  minutos: number | null;
   roubos: number;
-  tocos: number;
+  tocos: number | null;
   turnovers: number;
+  eficiencia: number;
   arremesso2: number;
   arremesso3: number;
   lanceLivre: number;
-  eficiencia: number;
 }
-
-export interface PosicaoStat {
-  pos: string;
-  media: number;
-}
-
-export interface DashData {
+export interface Dashboard {
   rodadas: string[];
   pontosPorRodada: number[];
   vitorias: number;
   derrotas: number;
-  jogadoras: Jogadora[];
+  jogadoras: Player[];
   arremesso2: number;
   arremesso3: number;
   lanceLivre: number;
-  roubosBola: number;
-  tocos: number;
-  pontosPorPosicao: PosicaoStat[];
-  sequenciaJogos: ('V' | 'D')[];
+  pontosPorPosicao: { pos: string; media: number }[];
 }
-
-export interface PointDot { x: number; y: number; label: string; val: number; }
-export interface PointLabel { x: number; label: string; }
-export interface ShootingBar { x: number; y: number; w: number; h: number; color: string; cx: number; vy: number; val: number; label: string; }
-export interface PositionBar { pos: string; labelX: number; textY: number; barX: number; y: number; w: number; h: number; valueX: number; media: number; }
-export interface StreakItem { result: 'V' | 'D'; color: string; }
-export interface StatBar { label: string; labelX: number; textY: number; barX: number; y: number; w: number; h: number; valueX: number; value: number; }
+export interface Team {
+  id: number;
+  nome: string;
+}
+export interface Clip {
+  id: number;
+  nome: string;
+  categoria: string;
+  url: string | null;
+  inicio: number;
+  fim: number;
+}
+export interface Playlist {
+  id: number;
+  nome: string;
+  clipes: Clip[];
+}
+export interface Training {
+  id: number;
+  titulo: string;
+  descricao: string;
+  jogadoraId: number | null;
+  data: string | null;
+}
+export interface MatchData {
+  partida: {
+    confronto: string;
+    data_hora?: string;
+    placar_final?: number;
+    adversario_placar?: number;
+  };
+  dashboard: Dashboard;
+  quartos?: {
+    numero: number;
+    placar: number;
+    adversarioPlacar?: number | null;
+  }[];
+}

@@ -47,3 +47,6 @@ Descomente caso use arquivos de ambiente locais privados
 /src/environments/environment.local.ts
 .env
 .env.local
+
+/test-results
+/playwright-report

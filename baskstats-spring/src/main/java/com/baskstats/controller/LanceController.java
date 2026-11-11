@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/lances")
 public class LanceController {
 
-    private final LanceService service;
+  private final LanceService service;
 
-    public LanceController(LanceService service) {
-        this.service = service;
-    }
+  public LanceController(LanceService service) {
+    this.service = service;
+  }
 
-    @GetMapping("/{id}")
-    public Lance buscarPorId(@PathVariable Integer id) {
-        return service.buscarPorId(id);
-    }
+  @GetMapping("/{id}")
+  public Lance buscarPorId(@PathVariable Integer id) {
+    return service.buscarPorId(id);
+  }
 }

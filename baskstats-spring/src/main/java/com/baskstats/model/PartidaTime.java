@@ -5,12 +5,18 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "partida_time", schema = "lbf")
 public class PartidaTime {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_partida_time")
+  private Integer id;
 
-    public PartidaTime() {}
+  public PartidaTime() {}
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
 }

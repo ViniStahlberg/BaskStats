@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "com.baskstats")
 public class BaskstatsSpringApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(BaskstatsSpringApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(BaskstatsSpringApplication.class, args);
+  }
 }
