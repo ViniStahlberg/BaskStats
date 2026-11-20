@@ -65,3 +65,39 @@ export interface MatchData {
     adversarioPlacar?: number | null;
   }[];
 }
+
+export interface PlanoTreinoAtleta {
+  id: number;
+  nome: string;
+  posicao: string;
+  numero: number | null;
+  jogos: number;
+  minutos: number;
+  ppj: number;
+  reb: number;
+  ast: number;
+  roubos: number;
+  turnovers: number;
+  eficiencia: number;
+  arremesso2: number;
+  arremesso3: number;
+  lanceLivre: number;
+  metricaFoco: string;
+  meta: number;
+  valorAtual: number;
+  valorRecente: number;
+  deltaRecente: number;
+  gapParaMeta: number;
+  statusMeta: 'ATINGIDA' | 'EM_FOCO';
+  recomendacaoTreino: string;
+}
+
+export interface PlanoTreinoResponse {
+  timeId: number;
+  foco: string;
+  meta: number;
+  ultimosJogos: number;
+  totalAtletas: number;
+  atletasEmFoco: number;
+  atletas: PlanoTreinoAtleta[];
+}
