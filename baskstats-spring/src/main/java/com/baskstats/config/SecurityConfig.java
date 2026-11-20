@@ -1,13 +1,14 @@
 package com.baskstats.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.*;
 
@@ -19,18 +20,16 @@ public class SecurityConfig {
   }
 
   @Bean
-  UserDetailsService users(JdbcClient db) {
-    return email ->
-        db.sql("select email,senha_hash from usuario where email=:email")
-            .param("email", email.toLowerCase(java.util.Locale.ROOT))
-            .query(
-                (rs, n) ->
-                    User.withUsername(rs.getString("email"))
-                        .password(rs.getString("senha_hash"))
-                        .roles("USER")
-                        .build())
-            .optional()
-            .orElseThrow(() -> new UsernameNotFoundException("Credenciais inválidas"));
+  UserDetailsService users(
+      PasswordEncoder encoder,
+      @Value("${baskstats.admin.email:admin@baskstats.local}") String adminEmail,
+      @Value("${baskstats.admin.password}") String adminPassword) {
+    UserDetails admin =
+        User.withUsername(adminEmail.toLowerCase(java.util.Locale.ROOT))
+            .password(encoder.encode(adminPassword))
+            .roles("ADMIN", "USER")
+            .build();
+    return new InMemoryUserDetailsManager(admin);
   }
 
   @Bean

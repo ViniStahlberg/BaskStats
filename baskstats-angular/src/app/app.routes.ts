@@ -1,6 +1,7 @@
 import { Routes } from "@angular/router";
 import { authGuard } from "./auth.service";
 import { ShellComponent } from "./shell.component";
+
 export const routes: Routes = [
   {
     path: "login",
@@ -57,9 +58,13 @@ export const routes: Routes = [
       {
         path: "treinos",
         loadComponent: () =>
-          import("./trainings.component").then((m) => m.TrainingsComponent),
+          import("./app.treino.component").then((m) => m.TreinosComponent),
       },
-      { path: "", pathMatch: "full", redirectTo: "painel" },
+      {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "painel",
+      },
     ],
   },
   { path: "**", redirectTo: "painel" },
