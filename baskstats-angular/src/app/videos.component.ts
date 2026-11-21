@@ -28,15 +28,42 @@ import { Clip, Playlist } from "./baskstats.model";
         </button>
       </div>
     </div>
+    <div
+      class="clip-filters"
+      role="group"
+      aria-label="Filtrar clipes por categoria"
+      *ngIf="categorias.length"
+    >
+      <button
+        type="button"
+        [class.active]="!categoria"
+        [attr.aria-pressed]="!categoria"
+        (click)="categoria = null"
+      >
+        Todos ({{ clips.length }})
+      </button>
+      <button
+        type="button"
+        *ngFor="let cat of categorias"
+        [class.active]="categoria === cat"
+        [attr.aria-pressed]="categoria === cat"
+        (click)="categoria = cat"
+      >
+        {{ rotulo(cat) }} ({{ total(cat) }})
+      </button>
+    </div>
     <div class="clip-carousel" #carousel>
       <a
         class="clip-card"
-        *ngFor="let c of clips"
+        *ngFor="let c of filtrados"
         [routerLink]="['/videos/clipes', c.id]"
         ><div class="clip-preview"><span>▷</span></div>
+        <small class="clip-tag" *ngIf="c.categoria">{{
+          rotulo(c.categoria)
+        }}</small>
         <span>{{ c.nome }}</span></a
       >
-      <p class="empty" *ngIf="!clips.length">Nenhum clipe disponível.</p>
+      <p class="empty" *ngIf="!filtrados.length">Nenhum clipe disponível.</p>
     </div>
     <div class="section-actions">
       <h2>Playlists salvas</h2>
@@ -92,9 +119,33 @@ export class VideosComponent implements OnInit {
   editId: number | undefined;
   name = "";
   selected: number[] = [];
+  categoria: string | null = null;
+  categorias: string[] = [];
+  private rotulos: Record<string, string> = {
+    Ataque: "Ataque",
+    Defesa: "Defesa",
+    Finalizacoes: "Finalizações",
+    Rebote_Ofensivo: "Rebote ofensivo",
+  };
+  get filtrados() {
+    return this.categoria
+      ? this.clips.filter((c) => c.categoria === this.categoria)
+      : this.clips;
+  }
+  rotulo(cat: string) {
+    return this.rotulos[cat] ?? cat.replace(/_/g, " ");
+  }
+  total(cat: string) {
+    return this.clips.filter((c) => c.categoria === cat).length;
+  }
   ngOnInit() {
     this.api.clips().subscribe({
-      next: (c) => (this.clips = c),
+      next: (c) => {
+        this.clips = c;
+        this.categorias = [
+          ...new Set(c.map((x) => x.categoria).filter((x) => !!x)),
+        ].sort();
+      },
       error: () => (this.error = "Não foi possível carregar os clipes."),
     });
     this.load();
