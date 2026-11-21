@@ -22,7 +22,8 @@ public class LibraryRepository {
         select c.id_clipe as id,coalesce(cc.nome,'Clipe')||'_'||c.id_clipe as nome,cc.nome as categoria,
         case when c.caminho_arquivo ~ '^https?://' then c.caminho_arquivo
         when p.link_video ~ '^https?://' then p.link_video else null end as url,
-        coalesce(c.inicio_segundos,0) as inicio,coalesce(c.fim_segundos,0) as fim
+        case when c.caminho_arquivo ~ '^https?://' then 0 else coalesce(c.inicio_segundos,0) end as inicio,
+        case when c.caminho_arquivo ~ '^https?://' then 0 else coalesce(c.fim_segundos,0) end as fim
         from clipe c left join categoriaclipe cc on cc.id_categoria_clipe=c.categoria_clipe_id
         left join partida p on p.id_partida=c.partida_id order by c.id_clipe desc
         """,
