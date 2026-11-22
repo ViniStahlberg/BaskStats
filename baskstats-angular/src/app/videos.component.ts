@@ -5,9 +5,6 @@ import { RouterLink } from "@angular/router";
 import { catchError, of } from "rxjs";
 import { BaskstatsService } from "./baskstats.service";
 import { Clip, Playlist } from "./baskstats.model";
-import { CategoriaGithub } from "./github-videos.service";
-
-export type FiltroCategoria = "todos" | CategoriaGithub;
 
 @Component({
   standalone: true,
@@ -93,21 +90,6 @@ export type FiltroCategoria = "todos" | CategoriaGithub;
     </header>
     <p class="error" *ngIf="error" role="alert">{{ error }}</p>
 
-    <div
-      class="category-filters"
-      role="group"
-      aria-label="Filtrar clipes por categoria"
-    >
-      <button
-        type="button"
-        *ngFor="let f of filtros"
-        [class.active]="categoriaAtiva === f.valor"
-        (click)="categoriaAtiva = f.valor"
-      >
-        {{ f.label }}
-      </button>
-    </div>
-
     <div class="section-actions">
       <span>Clipes recentes</span>
       <div>
@@ -124,10 +106,34 @@ export type FiltroCategoria = "todos" | CategoriaGithub;
         </button>
       </div>
     </div>
+    <div
+      class="clip-filters"
+      role="group"
+      aria-label="Filtrar clipes por categoria"
+      *ngIf="categorias.length"
+    >
+      <button
+        type="button"
+        [class.active]="!categoria"
+        [attr.aria-pressed]="!categoria"
+        (click)="categoria = null"
+      >
+        Todos ({{ clips.length }})
+      </button>
+      <button
+        type="button"
+        *ngFor="let cat of categorias"
+        [class.active]="categoria === cat"
+        [attr.aria-pressed]="categoria === cat"
+        (click)="categoria = cat"
+      >
+        {{ rotulo(cat) }} ({{ total(cat) }})
+      </button>
+    </div>
     <div class="clip-carousel" #carousel>
       <a
         class="clip-card"
-        *ngFor="let c of clipsFiltrados"
+        *ngFor="let c of filtrados"
         [routerLink]="['/videos/clipes', c.id]"
       >
         <div class="clip-preview clip-preview-solid">
@@ -140,7 +146,7 @@ export type FiltroCategoria = "todos" | CategoriaGithub;
             playsinline
           ></video>
           <div class="clip-preview-top">
-            <span class="clip-badge">{{ formatarCategoria(c.categoria) }}</span>
+            <span class="clip-badge">{{ rotulo(c.categoria || "Lance") }}</span>
             <span class="clip-tempo" *ngIf="extrairTrecho(c.nome) as trecho">
               {{ trecho }}
             </span>
@@ -150,11 +156,12 @@ export type FiltroCategoria = "todos" | CategoriaGithub;
           </div>
           <div class="clip-meta-footer">Análise de lance · Clique para abrir</div>
         </div>
+        <small class="clip-tag" *ngIf="c.categoria">{{
+          rotulo(c.categoria)
+        }}</small>
         <span>{{ c.nome }}</span>
       </a>
-      <p class="empty" *ngIf="!clipsFiltrados.length">
-        Nenhum clipe disponível para esta categoria.
-      </p>
+      <p class="empty" *ngIf="!filtrados.length">Nenhum clipe disponível.</p>
     </div>
     <div class="section-actions">
       <h2>Playlists salvas</h2>
@@ -210,30 +217,28 @@ export class VideosComponent implements OnInit {
   editId: number | undefined;
   name = "";
   selected: number[] = [];
+  categoria: string | null = null;
+  categorias: string[] = [];
 
-  categoriaAtiva: FiltroCategoria = "todos";
+  private rotulos: Record<string, string> = {
+    Ataque: "Ataque",
+    Defesa: "Defesa",
+    Finalizacoes: "Finalizações",
+    Rebote_Ofensivo: "Rebote ofensivo",
+  };
 
-  readonly filtros: { label: string; valor: FiltroCategoria }[] = [
-    { label: "Todos", valor: "todos" },
-    { label: "Ataque", valor: "Ataque" },
-    { label: "Defesa", valor: "Defesa" },
-    { label: "Finalizações", valor: "Finalizacoes" },
-    { label: "Rebote ofensivo", valor: "Rebote_Ofensivo" },
-  ];
-
-  get clipsFiltrados(): Clip[] {
-    if (this.categoriaAtiva === "todos") {
-      return this.clips;
-    }
-    return this.clips.filter(
-      (c) =>
-        (c.categoria ?? "").toLowerCase() === this.categoriaAtiva.toLowerCase(),
-    );
+  get filtrados() {
+    return this.categoria
+      ? this.clips.filter((c) => c.categoria === this.categoria)
+      : this.clips;
   }
 
-  formatarCategoria(categoria?: string): string {
-    if (!categoria) return "Lance";
-    return categoria.replace(/_/g, " ");
+  rotulo(cat: string) {
+    return this.rotulos[cat] ?? cat.replace(/_/g, " ");
+  }
+
+  total(cat: string) {
+    return this.clips.filter((c) => c.categoria === cat).length;
   }
 
   extrairTrecho(nome: string): string | null {
@@ -245,9 +250,9 @@ export class VideosComponent implements OnInit {
     this.api.clips().subscribe({
       next: (c) => {
         this.clips = c;
-        if (!c.length) {
-          this.error = "Não foi possível carregar os clipes.";
-        }
+        this.categorias = [
+          ...new Set(c.map((x) => x.categoria).filter((x) => !!x)),
+        ].sort();
       },
       error: () => (this.error = "Não foi possível carregar os clipes."),
     });
