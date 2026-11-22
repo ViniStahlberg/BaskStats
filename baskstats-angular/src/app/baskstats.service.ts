@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, catchError, forkJoin, map, of } from "rxjs";
 import {
   Dashboard,
   Player,
@@ -12,10 +12,12 @@ import {
   PlanoTreinoResponse,
 } from "./baskstats.model";
 import { dashboard, players } from "./demo";
+import { GithubVideosService } from "./github-videos.service";
 
 @Injectable({ providedIn: "root" })
 export class BaskstatsService {
   private http = inject(HttpClient);
+  private githubVideos = inject(GithubVideosService);
   demo = signal(sessionStorage.getItem("bask-demo") === "true");
   teamId = new BehaviorSubject<number>(
     Number(localStorage.getItem("bask-team")) || 1,
@@ -68,7 +70,7 @@ export class BaskstatsService {
   }
 
   clips() {
-    return this.demo()
+    const base$ = this.demo()
       ? of<Clip[]>(
           [1, 2, 3, 4].map((i) => ({
             id: i,
@@ -80,6 +82,34 @@ export class BaskstatsService {
           })),
         )
       : this.http.get<Clip[]>("/api/clipes");
+
+    return forkJoin({
+      locais: base$.pipe(catchError(() => of<Clip[]>([]))),
+      remotos: this.githubVideos.listar().pipe(catchError(() => of([]))),
+    }).pipe(
+      map(({ locais, remotos }) => {
+        const maiorId = locais.reduce(
+          (max, item) => Math.max(max, Number(item.id) || 0),
+          0,
+        );
+        const urlsExistentes = new Set(
+          locais.map((item) => item.url).filter(Boolean),
+        );
+
+        const clipsGithub: Clip[] = remotos
+          .filter((v) => !urlsExistentes.has(v.url))
+          .map((v, index) => ({
+            id: maiorId + index + 1,
+            nome: v.nome,
+            categoria: v.categoria,
+            url: v.url,
+            inicio: v.inicio,
+            fim: v.fim,
+          }));
+
+        return [...locais, ...clipsGithub];
+      }),
+    );
   }
 
   playlists() {

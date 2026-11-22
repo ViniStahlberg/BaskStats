@@ -16,6 +16,7 @@ export interface Player {
   arremesso3: number;
   lanceLivre: number;
 }
+
 export interface Dashboard {
   rodadas: string[];
   pontosPorRodada: number[];
@@ -27,10 +28,12 @@ export interface Dashboard {
   lanceLivre: number;
   pontosPorPosicao: { pos: string; media: number }[];
 }
+
 export interface Team {
   id: number;
   nome: string;
 }
+
 export interface Clip {
   id: number;
   nome: string;
@@ -39,11 +42,13 @@ export interface Clip {
   inicio: number;
   fim: number;
 }
+
 export interface Playlist {
   id: number;
   nome: string;
   clipes: Clip[];
 }
+
 export interface Training {
   id: number;
   titulo: string;
@@ -51,6 +56,7 @@ export interface Training {
   jogadoraId: number | null;
   data: string | null;
 }
+
 export interface MatchData {
   partida: {
     confronto: string;
