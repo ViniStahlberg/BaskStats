@@ -7,7 +7,7 @@ import { StatsGridComponent } from "./stats-cards.component";
   standalone: true,
   imports: [CommonModule, StatsGridComponent],
   template: `<header class="page-heading">
-      <h1>Visão geral da temporada do LBF</h1>
+      <h1>Visão geral da temporada da LBF</h1>
       <p>
         {{
           api.demo()
