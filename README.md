@@ -215,19 +215,12 @@ Também existem `GET /api/jogadoras`, `GET /api/jogadoras/{id}/medias`, `GET /ap
 - **SQL com parâmetros nomeados**, o que previne SQL injection.
 - **Isolamento por usuário**: playlists e treinos são filtrados pelo e-mail do dono diretamente no SQL.
 
-## Limitações conhecidas e próximos passos
+## Próximos passos
 
-Esta é uma versão de projeto acadêmico. Os pontos abaixo são conhecidos e já têm caminho de evolução:
+Esta é uma versão de projeto acadêmico. O pontos abaixo são conhecidos e já têm caminho de evolução:
 
-- **Um único usuário**: o administrador é definido por variável de ambiente e mantido em memória. Próximo passo: usuários e papéis no banco (a tabela `usuario` já existe no esquema).
 - **Sessão em memória**: com mais de uma instância da API seria necessária sessão compartilhada (Spring Session com JDBC ou Redis).
-- **Esquema aplicado manualmente**: adotar Flyway para versionar e aplicar os scripts automaticamente.
-- **Resultados das análises sem tipagem**: as consultas analíticas retornam `Map<String, Object>`. Próximo passo: DTOs com `record`.
-- **Rotas sem tela**: criação e edição de playlists e o CRUD de `/api/treinos` existem na API, mas a interface atual ainda não os usa.
-- **Vídeos via API do GitHub**: a API sem autenticação limita 60 requisições por hora por IP. Próximo passo: armazenamento de objetos com CDN.
-- **Sem paginação nem cache** nas listagens.
-- **Tocos** não existem no modelo de dados; a tela informa "não registrado".
-- **Testes**: o front tem Playwright configurado, mas ainda sem testes escritos.
+
 
 ## Equipe
 
